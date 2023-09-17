@@ -9,7 +9,7 @@ function App() {
       <Header></Header>
       <main>
         <Container>
-          <h1>Emall Revamped</h1>
+          <h1 className="text-3xl font-bold underline">Emall Revamped</h1>
         </Container>
       </main>
       <Footer></Footer>
