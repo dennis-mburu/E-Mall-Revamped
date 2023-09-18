@@ -67,7 +67,7 @@ const products = [
     brand: "Bose",
     category: "Electronics",
     price: 199.99,
-    countInStock: 80,
+    countInStock: 0,
     rating: 2.9,
     numReviews: 90,
   },
