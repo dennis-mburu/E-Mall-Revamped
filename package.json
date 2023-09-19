@@ -1,0 +1,15 @@
+{
+  "name": "e-mall-revamped",
+  "version": "2.0.0",
+  "description": "A rebuild of a previous E-commerce App built using a React fronte-end and a Rails backend, but this time using the MERN stack",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js"
+  },
+  "author": "Dennis Mburu",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
