@@ -1,5 +1,5 @@
-import React from "react";
-import {  useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Row,
   Col,
@@ -9,14 +9,23 @@ import {
   Button,
   ListGroupItem,
 } from "react-bootstrap";
-import products from "../products";
 import Rating from "../components/Rating";
 import { LinkContainer } from "react-router-bootstrap";
 
 function ProductScreen() {
+  const [product, setProduct] = useState({});
   const { id: productId } = useParams();
-  const product = products.find((product) => product._id === productId);
-  console.log(product.image);
+
+  const fetchProduct = async () => {
+    const res = await fetch(`/api/products/${productId}`);
+    const data = await res.json();
+    return setProduct(data);
+  };
+
+  useEffect(() => {
+    fetchProduct();
+  }, [productId]);
+
   return (
     <>
       <LinkContainer to="/" className="my-3">
@@ -43,7 +52,7 @@ function ProductScreen() {
         </Col>
         <Col md={4}>
           <Card>
-            <ListGroup >
+            <ListGroup>
               <ListGroupItem>
                 <Row>
                   <Col>Price: </Col>
