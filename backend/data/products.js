@@ -1,6 +1,5 @@
 const products = [
   {
-    _id: "1",
     name: "Smartphone",
     image: "./images/phone.jpg",
     description: "A powerful and feature-rich smartphone.",
@@ -12,7 +11,6 @@ const products = [
     numReviews: 50,
   },
   {
-    _id: "2",
     name: "Laptop",
     image: "./images/laptop.jpg",
     description: "A high-performance laptop for work and gaming.",
@@ -24,7 +22,6 @@ const products = [
     numReviews: 80,
   },
   {
-    _id: "3",
     name: "Smart TV",
     image: "./images/tv.jpg",
     description: "A 4K Ultra HD Smart TV with built-in streaming.",
@@ -36,7 +33,6 @@ const products = [
     numReviews: 45,
   },
   {
-    _id: "4",
     name: "Bluetooth Speaker",
     image: "./images/speaker.jpg",
     description: "A portable Bluetooth speaker with high-quality sound.",
@@ -48,7 +44,6 @@ const products = [
     numReviews: 60,
   },
   {
-    _id: "5",
     name: "Tablet",
     image: "./images/tablet.jpg",
     description: "A lightweight tablet for work and entertainment.",
@@ -60,7 +55,6 @@ const products = [
     numReviews: 70,
   },
   {
-    _id: "6",
     name: "Headphones",
     image: "./images/headphones.jpg",
     description: "Over-ear headphones with noise-canceling technology.",
@@ -72,7 +66,6 @@ const products = [
     numReviews: 90,
   },
   {
-    _id: "7",
     name: "Digital Camera",
     image: "./images/camera.jpg",
     description:
@@ -85,7 +78,6 @@ const products = [
     numReviews: 55,
   },
   {
-    _id: "8",
     name: "Gaming Console",
     image: "./images/console.jpg",
     description: "A next-gen gaming console for immersive gaming experiences.",
@@ -97,7 +89,6 @@ const products = [
     numReviews: 75,
   },
   {
-    _id: "9",
     name: "Smartwatch",
     image: "./images/watch.jpg",
     description: "A smartwatch with fitness tracking and notifications.",
@@ -109,7 +100,6 @@ const products = [
     numReviews: 40,
   },
   {
-    _id: "10",
     name: "Wireless Mouse",
     image: "./images/mouse.jpg",
     description: "A wireless mouse for increased productivity.",
