@@ -4,10 +4,19 @@ import Product from "../models/productModel.js";
 // @desc - Fetch all products
 // @route - /api/products
 // @access - Public
-const getAllProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({});
-  res.json(products);
-});
+// const getAllProducts = asyncHandler(async (req, res) => {
+//   const products = await Product.find({});
+//   res.json(products);
+// });
+
+function getAllProducts() {
+  console.log("get all Products");
+  asyncHandler(async (req, res) => {
+    console.log("Async Function");
+    const products = await Product.find({});
+    res.json(products);
+  });
+}
 
 // @desc - Fetch product by Id
 // @route - /api/products/:id
