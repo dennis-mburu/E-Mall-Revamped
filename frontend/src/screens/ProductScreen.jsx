@@ -11,16 +11,20 @@ import {
 } from "react-bootstrap";
 import Rating from "../components/Rating";
 import { LinkContainer } from "react-router-bootstrap";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 function ProductScreen() {
   const { id: productId } = useParams();
 
-  const {data: product, isLoading, error} = useGetProductByIdQuery(productId)
+  const { data: product, isLoading, error } = useGetProductByIdQuery(productId);
 
-  if (isLoading) return <h1>Loading...</h1>
+  if (isLoading) return <Loader />;
 
-  if(error) return <h1>{error.data.message || error.data}</h1>
-  
+  if (error)
+    return (
+      <Message variant="danger">{error.data.message || error.data}</Message>
+    );
 
   return (
     <>
