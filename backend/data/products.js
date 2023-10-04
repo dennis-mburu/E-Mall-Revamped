@@ -84,7 +84,7 @@ const products = [
     brand: "Sony",
     category: "Electronics",
     price: 499.99,
-    countInStock: 60,
+    countInStock: 0,
     rating: 4.7,
     numReviews: 75,
   },

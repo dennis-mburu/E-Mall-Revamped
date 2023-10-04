@@ -7,5 +7,5 @@ export const apiSlice = createApi({
   baseQuery,
   // Define the types pf data that we'll be fetching from our API
   tagTypes: ["Product", "Order", "User"],
-  endpoints: (builder) => ({}),
+  endpoints: () => ({}),
 });

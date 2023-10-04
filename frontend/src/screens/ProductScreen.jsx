@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useGetProductByIdQuery } from "../slices/productsApiSlice";
 import {
   Row,
   Col,
@@ -13,18 +13,14 @@ import Rating from "../components/Rating";
 import { LinkContainer } from "react-router-bootstrap";
 
 function ProductScreen() {
-  const [product, setProduct] = useState({});
   const { id: productId } = useParams();
 
-  const fetchProduct = async () => {
-    const res = await fetch(`/api/products/${productId}`);
-    const data = await res.json();
-    return setProduct(data);
-  };
+  const {data: product, isLoading, error} = useGetProductByIdQuery(productId)
 
-  useEffect(() => {
-    fetchProduct();
-  }, [productId]);
+  if (isLoading) return <h1>Loading...</h1>
+
+  if(error) return <h1>{error.data.message || error.data}</h1>
+  
 
   return (
     <>
@@ -75,8 +71,8 @@ function ProductScreen() {
                 <Button
                   type="button"
                   variant="primary"
-                  className="w-full bg-blue-600"
                   disabled={product.countInStock === 0}
+                  className="w-full bg-blue-600 disabled:text-slate-400"
                 >
                   Add to Cart
                 </Button>
