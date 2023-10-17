@@ -28,7 +28,7 @@ function ProductScreen() {
 
   function addToCartHandler() {
     dispatch(addToCart({ ...product, qty }));
-    navigate(-1);
+    navigate("/cart");
   }
 
   if (isLoading) return <Loader />;
@@ -46,10 +46,10 @@ function ProductScreen() {
 
       {/* <Link to="/" className="btn btn-light my-3" >Go back</Link> */}
       <Row>
-        <Col md={3}>
+        <Col md={4}>
           <Image src={product.image} alt={product.name} fluid />
         </Col>
-        <Col md={5}>
+        <Col md={4}>
           <ListGroup variant="flush">
             <ListGroup.Item>{product.name}</ListGroup.Item>
             <ListGroup.Item>
