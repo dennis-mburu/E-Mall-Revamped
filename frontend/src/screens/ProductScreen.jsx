@@ -8,14 +8,17 @@ import {
   Card,
   Button,
   ListGroupItem,
+  FormSelect,
 } from "react-bootstrap";
 import Rating from "../components/Rating";
 import { LinkContainer } from "react-router-bootstrap";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { useState } from "react";
 
 function ProductScreen() {
   const { id: productId } = useParams();
+  const [qty, setQty] = useState(1);
 
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId);
 
@@ -71,6 +74,27 @@ function ProductScreen() {
                   </Col>
                 </Row>
               </ListGroupItem>
+
+              {product.countInStock > 0 && (
+                <ListGroupItem>
+                  <Row>
+                    <Col>Qty</Col>
+                    <Col>
+                      <FormSelect
+                        value={qty}
+                        onChange={(e) => setQty(Number(e.target.value))}
+                      >
+                        {[...Array(product.countInStock).keys()].map((x) => (
+                          <option key={x} value={x + 1}>
+                            {x + 1}
+                          </option>
+                        ))}
+                      </FormSelect>
+                    </Col>
+                  </Row>
+                </ListGroupItem>
+              )}
+
               <ListGroupItem>
                 <Button
                   type="button"
