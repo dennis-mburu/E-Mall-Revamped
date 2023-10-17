@@ -8,7 +8,6 @@ function HomeScreen() {
   // const {data: products, isLoading, isFetching, isError, error} = useGetProductsQuery()
 
   const res = useGetProductsQuery();
-  console.log(res);
   if (res.isLoading) return <Loader />;
   if (res.error)
     return (

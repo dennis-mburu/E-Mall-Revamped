@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../slices/productsApiSlice";
 import {
   Row,
@@ -15,12 +15,21 @@ import { LinkContainer } from "react-router-bootstrap";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../slices/cartSlice";
 
 function ProductScreen() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id: productId } = useParams();
   const [qty, setQty] = useState(1);
 
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId);
+
+  function addToCartHandler() {
+    dispatch(addToCart({ ...product, qty }));
+    navigate(-1);
+  }
 
   if (isLoading) return <Loader />;
 
@@ -101,6 +110,7 @@ function ProductScreen() {
                   variant="primary"
                   disabled={product.countInStock === 0}
                   className="w-full bg-blue-600 disabled:text-slate-400"
+                  onClick={addToCartHandler}
                 >
                   Add to Cart
                 </Button>
