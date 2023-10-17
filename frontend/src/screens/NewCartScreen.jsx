@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Message from "../components/Message";
 import { LinkContainer } from "react-router-bootstrap";
 import { FaTrash } from "react-icons/fa";
-import { addToCart } from "../slices/cartSlice";
+import { addToCart, removeFromCart } from "../slices/cartSlice";
 import Grid from '@mui/material/Grid';
 
 
@@ -26,6 +26,10 @@ function CartScreen() {
 
   function addToCartHandler(product, qty) {
     dispatch(addToCart({ ...product, qty }));
+  }
+
+  function handleRemoveFromCart(id){
+        dispatch(removeFromCart(id))
   }
 
   return (
@@ -69,7 +73,7 @@ function CartScreen() {
                       </FormSelect>
                     </Grid>
                     <Grid item md={2}>
-                      <Button variant="danger">
+                      <Button variant="danger" onClick={() => handleRemoveFromCart(item._id)}>
                         <FaTrash className="text-red-500" />
                       </Button>
                     </Grid>
