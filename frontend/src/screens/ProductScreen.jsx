@@ -47,7 +47,6 @@ function ProductScreen() {
       {/* <Link to="/" className="btn btn-light my-3" >Go back</Link> */}
       <Row>
         <Col md={3}>
-          {/* <Image src={require(`${product.image}`) } alt={product.name}  /> */}
           <Image src={product.image} alt={product.name} fluid />
         </Col>
         <Col md={5}>

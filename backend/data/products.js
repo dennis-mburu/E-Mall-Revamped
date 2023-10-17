@@ -1,7 +1,7 @@
 const products = [
   {
     name: "Smartphone",
-    image: "./images/phone.jpg",
+    image: "/images/phone.jpg",
     description: "A powerful and feature-rich smartphone.",
     brand: "Samsung",
     category: "Electronics",
@@ -12,7 +12,7 @@ const products = [
   },
   {
     name: "Laptop",
-    image: "./images/laptop.jpg",
+    image: "/images/laptop.jpg",
     description: "A high-performance laptop for work and gaming.",
     brand: "Dell",
     category: "Electronics",
@@ -23,7 +23,7 @@ const products = [
   },
   {
     name: "Smart TV",
-    image: "./images/tv.jpg",
+    image: "/images/tv.jpg",
     description: "A 4K Ultra HD Smart TV with built-in streaming.",
     brand: "Sony",
     category: "Electronics",
@@ -34,7 +34,7 @@ const products = [
   },
   {
     name: "Bluetooth Speaker",
-    image: "./images/speaker.jpg",
+    image: "/images/speaker.jpg",
     description: "A portable Bluetooth speaker with high-quality sound.",
     brand: "JBL",
     category: "Electronics",
@@ -45,7 +45,7 @@ const products = [
   },
   {
     name: "Tablet",
-    image: "./images/tablet.jpg",
+    image: "/images/tablet.jpg",
     description: "A lightweight tablet for work and entertainment.",
     brand: "Apple",
     category: "Electronics",
@@ -56,7 +56,7 @@ const products = [
   },
   {
     name: "Headphones",
-    image: "./images/headphones.jpg",
+    image: "/images/headphones.jpg",
     description: "Over-ear headphones with noise-canceling technology.",
     brand: "Bose",
     category: "Electronics",
@@ -67,7 +67,7 @@ const products = [
   },
   {
     name: "Digital Camera",
-    image: "./images/camera.jpg",
+    image: "/images/camera.jpg",
     description:
       "A high-resolution digital camera for photography enthusiasts.",
     brand: "Canon",
@@ -79,7 +79,7 @@ const products = [
   },
   {
     name: "Gaming Console",
-    image: "./images/console.jpg",
+    image: "/images/console.jpg",
     description: "A next-gen gaming console for immersive gaming experiences.",
     brand: "Sony",
     category: "Electronics",
@@ -90,7 +90,7 @@ const products = [
   },
   {
     name: "Smartwatch",
-    image: "./images/watch.jpg",
+    image: "/images/watch.jpg",
     description: "A smartwatch with fitness tracking and notifications.",
     brand: "Fitbit",
     category: "Electronics",
@@ -101,7 +101,7 @@ const products = [
   },
   {
     name: "Wireless Mouse",
-    image: "./images/mouse.jpg",
+    image: "/images/mouse.jpg",
     description: "A wireless mouse for increased productivity.",
     brand: "Logitech",
     category: "Electronics",
