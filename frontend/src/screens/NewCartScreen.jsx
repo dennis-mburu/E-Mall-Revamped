@@ -1,10 +1,8 @@
 import React from "react";
 import {
   Button,
-  Col,
   ListGroup,
   ListGroupItem,
-  Row,
   Image,
   FormSelect,
   Card,
@@ -15,8 +13,7 @@ import Message from "../components/Message";
 import { LinkContainer } from "react-router-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import { addToCart, removeFromCart } from "../slices/cartSlice";
-import Grid from '@mui/material/Grid';
-
+import Grid from "@mui/material/Grid";
 
 function CartScreen() {
   const navigate = useNavigate();
@@ -28,8 +25,12 @@ function CartScreen() {
     dispatch(addToCart({ ...product, qty }));
   }
 
-  function handleRemoveFromCart(id){
-        dispatch(removeFromCart(id))
+  function handleRemoveFromCart(id) {
+    dispatch(removeFromCart(id));
+  }
+
+  function checkoutHandler() {
+    navigate("/login?redirect=/shipping");
   }
 
   return (
@@ -52,12 +53,20 @@ function CartScreen() {
                 <ListGroupItem key={item._id}>
                   <Grid container spacing={3}>
                     <Grid item md={2}>
-                      <Image src={item.image} alt={item.name} rounded fluid className="w-[100px] h-20 object-cover"/>
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        rounded
+                        fluid
+                        className="w-[100px] h-20 object-cover"
+                      />
                     </Grid>
                     <Grid item md={3}>
                       <Link to={`/product/${item._id}`}>{item.name}</Link>
                     </Grid>
-                    <Grid item md={2}>${item.price}</Grid>
+                    <Grid item md={2}>
+                      ${item.price}
+                    </Grid>
                     <Grid item md={3}>
                       <FormSelect
                         value={item.qty}
@@ -73,7 +82,10 @@ function CartScreen() {
                       </FormSelect>
                     </Grid>
                     <Grid item md={2}>
-                      <Button variant="danger" onClick={() => handleRemoveFromCart(item._id)}>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleRemoveFromCart(item._id)}
+                      >
                         <FaTrash className="text-red-500" />
                       </Button>
                     </Grid>
@@ -96,6 +108,7 @@ function CartScreen() {
                 <Button
                   className="bg-blue-600"
                   disabled={cartItems.length === 0}
+                  onClick={checkoutHandler}
                 >
                   Proceed to Checkout
                 </Button>
