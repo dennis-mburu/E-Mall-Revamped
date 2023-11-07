@@ -19,7 +19,7 @@ const router = express.Router();
 router
   .route("/")
   .get(protect, admin, getAllUsers)
-  .post(protect, admin, registerUser)
+  .post( registerUser)
   .delete(protect, admin, deleteAllUsers);
 
 router
