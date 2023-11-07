@@ -29,6 +29,33 @@ userSchema.methods.matchPassword = async function (sentPassword) {
   return await bcrypt.compare(sentPassword, this.password);
 };
 
+// TODO: find out the difference bettween this 3 functions:
+// userSchema.pre("save", function (next) {
+//   if (!this.isModified("password")) {
+//     next();
+//   }
+//   this.password =  bcrypt.hashSync(this.password, 10);
+//   next()
+// });
+// and
+
+// userSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) {
+//     next();
+//   }
+// const salt = await bcrypt.genSalt(10)
+// this.password = await bcrypt.hash(this.password, salt)
+//   this.password =  bcrypt.hashSync(this.password, 10);
+// });
+// and
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next();
+  }
+  this.password = bcrypt.hashSync(this.password, 10);
+});
+
 const User = mongoose.model("User", userSchema);
 
 export default User;
