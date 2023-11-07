@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 
 connectDB();
 
@@ -17,6 +18,9 @@ app.use(express.json());
 
 // x-www-form-url-encoded (key value pairs (from postman)) body parser middleware
 app.use(express.urlencoded({ extended: true }));
+
+//middleware to extract cookies
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("API is running...");
