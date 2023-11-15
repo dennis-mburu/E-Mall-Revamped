@@ -42,7 +42,7 @@ function Header() {
                 </Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="cart">
+              <LinkContainer to="/login">
                 <Nav.Link className="flex items-center text-white">
                   <FaUser className="mr-1" />
                   Sign In
