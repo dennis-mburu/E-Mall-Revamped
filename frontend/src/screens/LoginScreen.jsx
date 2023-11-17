@@ -11,6 +11,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../slices/authApiSlice";
 import { setCredentials } from "../slices/authSlice";
+import { toast } from 'react-toastify';
+
 
 function LoginScreen() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -38,6 +40,7 @@ function LoginScreen() {
       dispatch(setCredentials(res.data));
     } else {
       console.log("Error: ", res.error);
+      toast.error(res.error.data.message || res.error.data)
     }
   };
 
