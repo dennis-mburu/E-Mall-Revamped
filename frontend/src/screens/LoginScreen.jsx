@@ -34,13 +34,23 @@ function LoginScreen() {
     //   password: data.get("password"),
     // });
 
-    const res = await login(formData);
-    if (res.data) {
-      console.log("Data: ", res.data);
-      dispatch(setCredentials(res.data));
-    } else {
-      console.log("Error: ", res.error);
-      toast.error(res.error.data.message || res.error.data)
+    // const res = await login(formData);
+    // if (res.data) {
+    //   console.log("Data: ", res.data);
+    //   dispatch(setCredentials(res.data));
+    // } else {
+    //   console.log("Error: ", res.error);
+    //   toast.error(res.error.data.message || res.error.data)
+    // }
+
+    // to use the try catch you can chain the mutation with unwrap() to get the raw response/error
+    try {
+      const res = await login(formData).unwrap()
+      console.log(res)
+      dispatch(setCredentials(res));
+    } catch (error) {
+      console.log(error)
+      toast.error(error.data.message || error.data)
     }
   };
 
