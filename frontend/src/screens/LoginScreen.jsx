@@ -7,19 +7,29 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/authApiSlice";
 import { setCredentials } from "../slices/authSlice";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 function LoginScreen() {
   const [formData, setFormData] = useState({ email: "", password: "" });
-
+  const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const [login, { isLoading }] = useLoginMutation();
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const redirect = searchParams.get("redirect") || "/";
 
-  const [login] = useLoginMutation();
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
+    }
+  }, [userInfo, navigate, redirect]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,12 +55,11 @@ function LoginScreen() {
 
     // to use the try catch you can chain the mutation with unwrap() to get the raw response/error
     try {
-      const res = await login(formData).unwrap()
-      console.log(res)
+      const res = await login(formData).unwrap();
       dispatch(setCredentials(res));
+      navigate(redirect);
     } catch (error) {
-      console.log(error)
-      toast.error(error.data.message || error.data)
+      toast.error(error.data.message || error.data);
     }
   };
 
@@ -108,9 +117,11 @@ function LoginScreen() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={isLoading}
           >
             Log In
           </Button>
+          {isLoading && <Loader />}
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
@@ -118,7 +129,7 @@ function LoginScreen() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
