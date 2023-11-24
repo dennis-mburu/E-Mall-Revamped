@@ -1,11 +1,16 @@
 import React from "react";
-import { Navbar, Nav, Container, Badge } from "react-bootstrap";
+import { Navbar, Nav, Container, Badge, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 
 function Header() {
   const { cartItems } = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.auth);
+
+  function handleLogout() {
+    console.log("handle logout");
+  }
 
   return (
     <header>
@@ -41,13 +46,25 @@ function Header() {
                   )}
                 </Nav.Link>
               </LinkContainer>
+              {/*TODO:  Style the dropdown, and add avatar/icons */}
+              {userInfo ? (
+                <NavDropdown title={userInfo.name} id="user-info">
+                  <LinkContainer to="/cart">
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
 
-              <LinkContainer to="/login">
-                <Nav.Link className="flex items-center text-white">
-                  <FaUser className="mr-1" />
-                  Sign In
-                </Nav.Link>
-              </LinkContainer>
+                  <NavDropdown.Item onClick={handleLogout}>
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <LinkContainer to="/login">
+                  <Nav.Link className="flex items-center text-white">
+                    <FaUser className="mr-1" />
+                    Sign In
+                  </Nav.Link>
+                </LinkContainer>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
