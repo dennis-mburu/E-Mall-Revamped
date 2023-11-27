@@ -4,18 +4,23 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useDispatch, useSelector } from "react-redux";
+import { setShippingAddress } from "../slices/cartSlice";
 
 function ShippingScreen() {
+  const { shippingAddress } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+
   const [shippingData, setShippingData] = useState({
-    address: "",
-    city: "",
-    postalCode: "",
-    country: "",
+    address: shippingAddress.address || "",
+    city: shippingAddress.city || "",
+    postalCode: shippingAddress.postalCode || "",
+    country: shippingAddress.country || "",
   });
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(shippingData);
+    dispatch(setShippingAddress(shippingData));
   };
 
   function handleChange(e) {
@@ -49,6 +54,7 @@ function ShippingScreen() {
             name="address"
             autoComplete="address"
             autoFocus
+            value={shippingData.address}
             onChange={(e) => handleChange(e)}
           />
           <TextField
@@ -59,6 +65,7 @@ function ShippingScreen() {
             label="City"
             id="city"
             autoComplete="city"
+            value={shippingData.city}
             onChange={(e) => handleChange(e)}
           />
           <TextField
@@ -69,6 +76,7 @@ function ShippingScreen() {
             label="Postal Code"
             id="postalCode"
             autoComplete="postalCode"
+            value={shippingData.postalCode}
             onChange={(e) => handleChange(e)}
           />
           <TextField
@@ -79,6 +87,7 @@ function ShippingScreen() {
             label="Country"
             id="country"
             autoComplete="country"
+            value={shippingData.country}
             onChange={(e) => handleChange(e)}
           />
           <Button
