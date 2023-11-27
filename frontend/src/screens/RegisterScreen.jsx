@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,17 +10,44 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { toast } from "react-toastify";
+import { useRegisterMutation } from "../slices/authApiSlice";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const theme = createTheme();
 
 function RegisterScreen() {
-  const handleSubmit = (event) => {
+  const [register, { isLoading }] = useRegisterMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    } else {
+      try {
+        const res = await register(formData).unwrap();
+        dispatch(setCredentials(res));
+        navigate("/cart");
+      } catch (error) {
+        toast.error(error.data.message || error.data);
+      }
+    }
   };
 
   return (
@@ -61,6 +88,9 @@ function RegisterScreen() {
                   id="name"
                   label="Full Names"
                   autoFocus
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
                 />
               </Grid>
 
@@ -72,6 +102,10 @@ function RegisterScreen() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  type="email"
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -83,6 +117,9 @@ function RegisterScreen() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -94,14 +131,19 @@ function RegisterScreen() {
                   type="password"
                   id="confirmPassword"
                   autoComplete="confirm-password"
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
                 />
               </Grid>
             </Grid>
+            {isLoading && <Loader />}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
             >
               Sign Up
             </Button>
