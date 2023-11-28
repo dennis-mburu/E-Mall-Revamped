@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import { useRegisterMutation } from "../slices/authApiSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -29,6 +29,14 @@ function RegisterScreen() {
     password: "",
     confirmPassword: "",
   });
+
+  const {userInfo} = useSelector(state => state.auth)
+
+  useEffect(() => {
+    if(userInfo){
+      navigate("/")
+    }
+  })
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
