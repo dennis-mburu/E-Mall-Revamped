@@ -7,10 +7,12 @@ import Container from "@mui/material/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { setShippingAddress } from "../slices/cartSlice";
 import CheckoutSteps from "../components/CheckoutSteps";
+import { useNavigate } from "react-router-dom";
 
 function ShippingScreen() {
   const { shippingAddress } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [shippingData, setShippingData] = useState({
     address: shippingAddress.address || "",
@@ -22,6 +24,7 @@ function ShippingScreen() {
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(setShippingAddress(shippingData));
+    navigate("/payment")
   };
 
   function handleChange(e) {
