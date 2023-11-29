@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -11,18 +11,28 @@ import FormLabel from "@mui/material/FormLabel";
 import { useDispatch, useSelector } from "react-redux";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { useNavigate } from "react-router-dom";
+import { savePaymentMethod } from "../slices/cartSlice";
 
 function PaymentScreen() {
-  const [value, setValue] = useState("PayPal");
-
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
+  const [paymentMethod, setPaymentMethod] = useState("PayPal");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { shippingAddress } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    if (!shippingAddress) {
+      navigate("/shipping");
+    }
+  }, [shippingAddress, navigate]);
+
+  const handleChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
-    navigate("/placeorder")
+    dispatch(savePaymentMethod(paymentMethod));
+    navigate("/placeorder");
   };
 
   return (
@@ -44,7 +54,8 @@ function PaymentScreen() {
         <Typography component="h1" variant="h5" className="mb-2">
           Payment Details
         </Typography>
-        <FormControl component="form"
+        <FormControl
+          component="form"
           sx={
             {
               // alignSelf: "self-start"
@@ -56,7 +67,7 @@ function PaymentScreen() {
           <RadioGroup
             aria-labelledby="payment-radio-buttons-group"
             name="payment-radio-buttons-group"
-            value={value}
+            value={paymentMethod}
             onChange={handleChange}
           >
             <FormControlLabel
@@ -65,10 +76,10 @@ function PaymentScreen() {
               label="PayPal or Credit Card"
             />
             <FormControlLabel
-              value="m-pesa"
+              value="M-Pesa"
               control={<Radio />}
               label="M-Pesa"
-              disabled
+              //   disabled
             />
           </RadioGroup>
           <Button
