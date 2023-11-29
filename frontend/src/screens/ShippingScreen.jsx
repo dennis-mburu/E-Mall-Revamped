@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { setShippingAddress } from "../slices/cartSlice";
+import CheckoutSteps from "../components/CheckoutSteps";
 
 function ShippingScreen() {
   const { shippingAddress } = useSelector((state) => state.cart);
@@ -41,6 +42,8 @@ function ShippingScreen() {
           alignItems: "center",
         }}
       >
+        <CheckoutSteps step1 step2 />
+
         <Typography component="h1" variant="h5">
           Shipping Details
         </Typography>
