@@ -6,6 +6,46 @@ main {
   min-height: 80vh;
 }
 
+.nav-brand {
+  display: flex;
+  /* align-items: center; */
+}
+
+.nav-brand svg {
+  fill: currentColor;
+  --tw-text-opacity: 1;
+  color: rgb(34 211 238 / var(--tw-text-opacity));
+  margin-right: 0.5rem;
+}
+
+.nav-brand h1{
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+}
+
+.nav-link{
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+  color: white;
+}
+
+/* TODO: Look for suitable hover colors for navbars */
+.nav-link:hover{
+  /* background-color: #297fb8; */
+  /* color: #ff8c00; */
+  color: white;
+}
+
+.nav-link .icon{
+  margin-right: 0.25rem ;
+}
+
+.badge{
+  margin-left: 0.25rem;
+}
+
 .rating span {
   margin: 0.1rem;
 }
