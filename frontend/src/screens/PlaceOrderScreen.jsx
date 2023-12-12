@@ -9,10 +9,17 @@ import {
   ListGroupItem,
   Row,
 } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useCreateOrderMutation } from "../slices/orderApiSlice";
+import { clearCart } from "../slices/cartSlice";
+import { toast } from "react-toastify";
 
 function PlaceOrderScreen() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [placeOrder] = useCreateOrderMutation();
+
   const {
     cartItems,
     shippingAddress,
@@ -22,6 +29,26 @@ function PlaceOrderScreen() {
     totalPrice,
     paymentMethod,
   } = useSelector((state) => state.cart);
+
+  async function handlePlaceOrder() {
+    try {
+      const res = await placeOrder({
+        cartItems,
+        shippingAddress,
+        itemsPrice,
+        shippingPrice,
+        taxPrice,
+        totalPrice,
+        paymentMethod,
+      }).unwrap();
+      console.log(res);
+      dispatch(clearCart());
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      toast.error(error.data.message || error.data);
+    }
+  }
 
   return (
     <>
@@ -52,7 +79,7 @@ function PlaceOrderScreen() {
               <h2>Order Items</h2>
               <ListGroup variant="flush">
                 {cartItems.map((item) => (
-                  <ListGroupItem>
+                  <ListGroupItem key={item._id}>
                     <Row>
                       <Col md={1}>
                         <Image src={item.image} fluid rounded alt={item.name} />
@@ -128,7 +155,9 @@ function PlaceOrderScreen() {
             </ListGroup>
             <ListGroupItem></ListGroupItem>
             <ListGroupItem>
-              <Button variant="contained" fullWidth>Place Order</Button>
+              <Button variant="contained" disabled={cartItems.length === 0} fullWidth onClick={handlePlaceOrder}>
+                Place Order
+              </Button>
             </ListGroupItem>
           </Card>
         </Col>
