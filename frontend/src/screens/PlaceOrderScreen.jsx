@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CheckoutSteps from "../components/CheckoutSteps";
 import Button from "@mui/material/Button";
 import {
@@ -29,6 +29,15 @@ function PlaceOrderScreen() {
     totalPrice,
     paymentMethod,
   } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    if(!shippingAddress.address){
+      navigate("/shipping")
+    }
+    else if (!paymentMethod){
+      navigate('/payment')
+    }
+  }, [shippingAddress.address, paymentMethod, navigate])
 
   async function handlePlaceOrder() {
     try {
