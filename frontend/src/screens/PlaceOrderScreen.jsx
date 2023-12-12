@@ -41,11 +41,9 @@ function PlaceOrderScreen() {
         totalPrice,
         paymentMethod,
       }).unwrap();
-      console.log(res);
       dispatch(clearCart());
       navigate("/");
     } catch (error) {
-      console.log(error);
       toast.error(error.data.message || error.data);
     }
   }

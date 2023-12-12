@@ -5,7 +5,6 @@ import Order from "../models/orderModel.js";
 // @route - POST /api/orders
 // @access - Private
 const createNewOrder = asyncHandler(async (req, res) => {
-  // res.send("Create New Order");
   const orderItems = req.body.cartItems.map((item) => ({
     ...item,
     product: item._id,
@@ -19,30 +18,22 @@ const createNewOrder = asyncHandler(async (req, res) => {
     shippingAddress,
   } = req.body;
 
-  const newOrder = new Order({
-    orderItems,
-    itemsPrice,
-    shippingPrice,
-    taxPrice,
-    totalPrice,
-    paymentMethod,
-    shippingAddress,
-    user: req.user._id,
-  });
-
-  console.log({ newOrder });
-
-  if (newOrder) {
-    try {
-      const savedOrder = await newOrder.save();
-      console.log({ savedOrder });
-      res.status(201).json(savedOrder);
-    } catch (error) {
-      console.log(error);
-      throw new Error("Error Saving Order");
-    }
+  if (orderItems.length === 0) {
+    res.status(400);
+    throw new Error("No Order Items");
   } else {
-    throw new Error("Error Placing Order!");
+    const newOrder = new Order({
+      orderItems,
+      itemsPrice,
+      shippingPrice,
+      taxPrice,
+      totalPrice,
+      paymentMethod,
+      shippingAddress,
+      user: req.user._id,
+    });
+    const savedOrder = await newOrder.save();
+    res.status(201).json(savedOrder);
   }
 });
 
