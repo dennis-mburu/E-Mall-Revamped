@@ -16,9 +16,9 @@ function OrderDetailsScreen() {
     );
   return (
     <>
-      <h1>
+      <h2>
         Order <em>{order._id}</em>{" "}
-      </h1>
+      </h2>
     </>
   );
 }

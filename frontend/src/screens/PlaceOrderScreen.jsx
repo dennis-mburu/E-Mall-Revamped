@@ -31,13 +31,12 @@ function PlaceOrderScreen() {
   } = useSelector((state) => state.cart);
 
   useEffect(() => {
-    if(!shippingAddress.address){
-      navigate("/shipping")
+    if (!shippingAddress.address) {
+      navigate("/shipping");
+    } else if (!paymentMethod) {
+      navigate("/payment");
     }
-    else if (!paymentMethod){
-      navigate('/payment')
-    }
-  }, [shippingAddress.address, paymentMethod, navigate])
+  }, [shippingAddress.address, paymentMethod, navigate]);
 
   async function handlePlaceOrder() {
     try {
@@ -95,7 +94,7 @@ function PlaceOrderScreen() {
                         <Link to={`/product/${item._id}`}>{item.name}</Link>
                       </Col>
                       <Col md={4}>
-                        {item.qty} x ${item.price} = {itemsPrice}
+                        {item.qty} x ${item.price} = {item.qty * item.price}
                       </Col>
                     </Row>
                   </ListGroupItem>
@@ -162,7 +161,12 @@ function PlaceOrderScreen() {
             </ListGroup>
             <ListGroupItem></ListGroupItem>
             <ListGroupItem>
-              <Button variant="contained" disabled={cartItems.length === 0} fullWidth onClick={handlePlaceOrder}>
+              <Button
+                variant="contained"
+                disabled={cartItems.length === 0}
+                fullWidth
+                onClick={handlePlaceOrder}
+              >
                 Place Order
               </Button>
             </ListGroupItem>
