@@ -51,7 +51,7 @@ function PlaceOrderScreen() {
         paymentMethod,
       }).unwrap();
       dispatch(clearCart());
-      navigate("/");
+      navigate(`/orders/${res._id}`);
     } catch (error) {
       toast.error(error.data.message || error.data);
     }

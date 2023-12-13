@@ -62,7 +62,15 @@ const getAllOrders = asyncHandler(async (req, res) => {
 // @route - GET /api/orders/:id
 // @access - Private
 const getOrderById = asyncHandler(async (req, res) => {
-  res.send("Get Order by Id");
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
+  if (order) {
+    res.status(200).json(order);
+  } else {
+    throw new Error("Order Not Found");
+  }
 });
 
 // @desc - Mark Order as Delivered
