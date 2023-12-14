@@ -47,7 +47,7 @@ function ProductScreen() {
       {/* <Link to="/" className="btn btn-light my-3" >Go back</Link> */}
       <Row>
         <Col md={4}>
-          <Image src={product.image} alt={product.name} fluid />
+          <Image src={product.image} alt={product.name} fluid rounded/>
         </Col>
         <Col md={4}>
           <ListGroup variant="flush">

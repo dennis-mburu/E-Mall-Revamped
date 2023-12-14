@@ -61,6 +61,12 @@ main {
   margin-block: 0.75rem;
   padding: 0.75rem;
 }
+
+.card-image{
+  height: 20rem;
+  object-fit: cover;
+  /* width: 100%; */
+}
 /*End of Home Page & Product Component Styles */
 
 /* Footer Component Styles */
