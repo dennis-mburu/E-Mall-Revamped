@@ -8,7 +8,7 @@ function Footer() {
     <footer>
       <Container>
         <Row>
-          <Col className="text-center">
+          <Col className="footer">
             <p>E-mall v2 &copy; {currentYear}</p>
             <p>
               Made with <span>&#x2665;</span> by <span>Dennis Mburu </span>

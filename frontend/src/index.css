@@ -6,6 +6,7 @@ main {
   min-height: 80vh;
 }
 
+/* Header Component Styles */
 .nav-brand {
   display: flex;
   /* align-items: center; */
@@ -18,13 +19,13 @@ main {
   margin-right: 0.5rem;
 }
 
-.nav-brand h1{
+.nav-brand h1 {
   font-size: 1.8rem;
   font-weight: 700;
   color: white;
 }
 
-.nav-link{
+.nav-link {
   display: flex;
   align-items: center;
   margin-right: 1rem;
@@ -32,19 +33,41 @@ main {
 }
 
 /* TODO: Look for suitable hover colors for navbars */
-.nav-link:hover{
+.nav-link:hover {
   /* background-color: #297fb8; */
   /* color: #ff8c00; */
   color: white;
 }
 
-.nav-link .icon{
-  margin-right: 0.25rem ;
+.nav-link .icon {
+  margin-right: 0.25rem;
 }
 
-.badge{
+.badge {
   margin-left: 0.25rem;
 }
+/*End of Header Component Styles */
+
+/* Home Page & Product Component Styles */
+.main-heading {
+  font-size: 1.875rem /* 30px */;
+  font-weight: 700;
+  text-decoration-line: underline;
+  text-align: center;
+  margin: 0.75rem /* 12px */;
+}
+
+.product-card {
+  margin-block: 0.75rem;
+  padding: 0.75rem;
+}
+/*End of Home Page & Product Component Styles */
+
+/* Footer Component Styles */
+.footer {
+  text-align: center;
+}
+/* End of footer Styles */
 
 .rating span {
   margin: 0.1rem;

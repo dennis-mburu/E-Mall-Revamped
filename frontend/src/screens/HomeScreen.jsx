@@ -18,9 +18,7 @@ function HomeScreen() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold underline text-center m-3">
-        Latest Products
-      </h1>
+      <h1 className="main-heading">Latest Products</h1>
       <Row>
         {/* {products?.map((product) => ( */}
         {res.data.map((product) => (
