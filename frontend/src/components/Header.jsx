@@ -61,7 +61,7 @@ function Header() {
               {/*TODO:  Style the dropdown, and add avatar/icons */}
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id="user-info">
-                  <LinkContainer to="/cart">
+                  <LinkContainer to="/profile">
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>
 
