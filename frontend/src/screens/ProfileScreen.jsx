@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Col, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useUpdateProfileMutation } from "../slices/authApiSlice";
+import { toast } from "react-toastify";
+import { setCredentials } from "../slices/authSlice";
 
 function ProfileScreen() {
   const [name, setName] = useState("");
@@ -12,9 +16,35 @@ function ProfileScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  function handleSubmit(e) {
+  const dispatch = useDispatch();
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [updateProfile, { isLoading: loadingUpdateProfile }] =
+    useUpdateProfileMutation();
+
+  useEffect(() => {
+    if (userInfo) {
+      setName(userInfo.name);
+      setEmail(userInfo.email);
+    }
+  }, [userInfo, userInfo.name, userInfo.email]);
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log("update profile submit");
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords don't match");
+    } else {
+      try {
+        const res = await updateProfile({ name, email, password }).unwrap();
+        dispatch(setCredentials(res));
+        toast.success("Profile updated successfully");
+      } catch (error) {
+        console.log(error);
+        toast.error(error.data.message || error.data);
+      }
+    }
   }
 
   return (

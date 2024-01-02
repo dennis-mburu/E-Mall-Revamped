@@ -51,9 +51,21 @@ userSchema.methods.matchPassword = async function (sentPassword) {
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
+    console.log("Inside pre save: password not modified: ", this.password);
     next();
   }
-  this.password = bcrypt.hashSync(this.password, 10);
+  console.log("Inside pre save: password  modified: ", this.password);
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+
+  // Don't use this synchronous version as the password will always be modified and saved 
+  // even when left blank in the frontend:
+  // this.password =  bcrypt.hashSync(this.password, 10);
+  console.log(
+    "Inside pre save: password  modified: After salting: ",
+    this.password
+  );
 });
 
 const User = mongoose.model("User", userSchema);
