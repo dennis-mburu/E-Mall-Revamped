@@ -16,7 +16,13 @@ const orderApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    getMyOrders: builder.query({
+      query: () => ({
+        url: `${ORDERS_URL}/myorders`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
   }),
 });
 
-export const { useCreateOrderMutation, useGetOrderByIdQuery } = orderApiSlice;
+export const { useCreateOrderMutation, useGetOrderByIdQuery, useGetMyOrdersQuery } = orderApiSlice;

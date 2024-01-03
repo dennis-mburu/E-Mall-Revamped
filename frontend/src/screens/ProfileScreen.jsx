@@ -9,6 +9,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { useUpdateProfileMutation } from "../slices/authApiSlice";
 import { toast } from "react-toastify";
 import { setCredentials } from "../slices/authSlice";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Loader from "../components/Loader";
+import { useGetMyOrdersQuery } from "../slices/orderApiSlice";
+import { FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import Message from "../components/Message";
+
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
+  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
+  createData("Eclair", 262, 16.0, 24, 6.0),
+  createData("Cupcake", 305, 3.7, 67, 4.3),
+  createData("Gingerbread", 356, 16.0, 49, 3.9),
+];
 
 function ProfileScreen() {
   const [name, setName] = useState("");
@@ -17,8 +41,15 @@ function ProfileScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { userInfo } = useSelector((state) => state.auth);
+
+  const {
+    data: orders,
+    isLoading: loadingOrders,
+    error,
+  } = useGetMyOrdersQuery();
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useUpdateProfileMutation();
@@ -49,7 +80,7 @@ function ProfileScreen() {
 
   return (
     <Row>
-      <Col md={5}>
+      <Col md={4}>
         <Container component="main" maxWidth="sm">
           <Box
             sx={{
@@ -126,9 +157,11 @@ function ProfileScreen() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={loadingUpdateProfile}
               >
                 Update Profile
               </Button>
+              {loadingUpdateProfile && <Loader />}
             </Box>
           </Box>
         </Container>
@@ -147,8 +180,78 @@ function ProfileScreen() {
           }}
         >
           <Typography component="h1" variant="h5">
-            Previous Orders
+            My Orders
           </Typography>
+          {loadingOrders ? (
+            <Loader />
+          ) : error ? (
+            <Message variant="danger">
+              {error.data.message || error.data}
+            </Message>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table
+                sx={{ minWidth: 650 }}
+                size="small"
+                aria-label="simple table"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">ID</TableCell>
+                    <TableCell align="center">DATE</TableCell>
+                    <TableCell align="center">TOTAL</TableCell>
+                    <TableCell align="center">PAID</TableCell>
+                    <TableCell align="center">DELIVERED</TableCell>
+                    <TableCell align="center"></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orders?.map((order) => (
+                    <TableRow
+                      key={order.name}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {order._id}
+                      </TableCell>
+                      <TableCell align="center">
+                        {order.createdAt.substring(0, 10)}
+                      </TableCell>
+                      <TableCell align="center">{order.totalPrice}</TableCell>
+                      <TableCell align="center">
+                        {order.isPaid ? (
+                          order.paidAt
+                        ) : (
+                          <FaTimes style={{ color: "red" }} />
+                        )}
+                      </TableCell>
+                      <TableCell align="center">
+                        {order.isDelivered ? (
+                          order.deliveredAt
+                        ) : (
+                          <FaTimes style={{ color: "red" }} />
+                        )}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => navigate(`/orders/${order._id}`)}
+                        >
+                          Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              {orders.length === 0 && (
+                <Message style={{ textAlign: "center" }}>
+                  You Do Not have any previous orders
+                </Message>
+              )}
+            </TableContainer>
+          )}
         </Box>
       </Col>
     </Row>

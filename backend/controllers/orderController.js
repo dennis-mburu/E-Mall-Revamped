@@ -41,7 +41,9 @@ const createNewOrder = asyncHandler(async (req, res) => {
 // @route - Get /api/orders/myorders
 // @access - Private
 const getMyOrders = asyncHandler(async (req, res) => {
-  res.send("Get logged in user's orders");
+  // res.send("Get logged in user's orders");
+  const orders = await Order.find({user: req.user._id})
+  res.status(200).json(orders)
 });
 
 // @desc - Pay for an Order
