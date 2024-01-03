@@ -202,14 +202,18 @@ function ProfileScreen() {
                     <TableCell align="center">TOTAL</TableCell>
                     <TableCell align="center">PAID</TableCell>
                     <TableCell align="center">DELIVERED</TableCell>
-                    <TableCell align="center"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {orders?.map((order) => (
                     <TableRow
+                      hover
                       key={order.name}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                        cursor: "pointer",
+                      }}
+                      onClick={() => navigate(`/orders/${order._id}`)}
                     >
                       <TableCell component="th" scope="row">
                         {order._id}
@@ -231,15 +235,6 @@ function ProfileScreen() {
                         ) : (
                           <FaTimes style={{ color: "red" }} />
                         )}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => navigate(`/orders/${order._id}`)}
-                        >
-                          Details
-                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
