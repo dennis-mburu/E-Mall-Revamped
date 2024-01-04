@@ -42,8 +42,8 @@ const createNewOrder = asyncHandler(async (req, res) => {
 // @access - Private
 const getMyOrders = asyncHandler(async (req, res) => {
   // res.send("Get logged in user's orders");
-  const orders = await Order.find({user: req.user._id})
-  res.status(200).json(orders)
+  const orders = await Order.find({ user: req.user._id });
+  res.status(200).json(orders);
 });
 
 // @desc - Pay for an Order
@@ -74,7 +74,9 @@ const payOrder = asyncHandler(async (req, res) => {
 // @route - GET /api/orders
 // @access - Private/Admin
 const getAllOrders = asyncHandler(async (req, res) => {
-  res.send("Get all Orders");
+  // res.send("Get all Orders");
+  const orders = await Order.find({}).populate("user", "name email");
+  res.status(200).json(orders);
 });
 
 // @desc - Get Order by Id
