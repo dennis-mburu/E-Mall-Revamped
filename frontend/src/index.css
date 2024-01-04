@@ -6,6 +6,11 @@ main {
   min-height: 80vh;
 }
 
+body {
+  font-family: "DM Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
+}
+
 /* Header Component Styles */
 .nav-brand {
   display: flex;
@@ -62,7 +67,7 @@ main {
   padding: 0.75rem;
 }
 
-.card-image{
+.card-image {
   height: 20rem;
   object-fit: cover;
   /* width: 100%; */
