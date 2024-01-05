@@ -62,7 +62,7 @@ const payOrder = asyncHandler(async (req, res) => {
       update_time: req.body.update_time,
       email_address: req.body.payer.email_address,
     };
-    const savedOrder = await Order.save();
+    const savedOrder = await order.save();
     res.status(200).json(savedOrder);
   } else {
     res.status(404);
@@ -74,7 +74,6 @@ const payOrder = asyncHandler(async (req, res) => {
 // @route - GET /api/orders
 // @access - Private/Admin
 const getAllOrders = asyncHandler(async (req, res) => {
-  // res.send("Get all Orders");
   const orders = await Order.find({}).populate("user", "name email");
   res.status(200).json(orders);
 });
@@ -99,7 +98,16 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @route - PUT /api/orders/:id/deliver
 // @access - Private
 const deliverOrder = asyncHandler(async (req, res) => {
-  res.send("Mark Order as delivered");
+  const order = await Order.findById(req.params.id);
+  if (order) {
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+    const deliveredOrder = await order.save();
+    res.status(200).json(deliveredOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
 });
 
 export {

@@ -1,6 +1,9 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { useGetOrderByIdQuery } from "../slices/orderApiSlice";
+import {
+  useDeliverOrderMutation,
+  useGetOrderByIdQuery,
+} from "../slices/orderApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import {
@@ -13,14 +16,27 @@ import {
 } from "react-bootstrap";
 import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function OrderDetailsScreen() {
   const { id: orderId } = useParams();
-  const { data: order, isLoading, error } = useGetOrderByIdQuery(orderId);
+  const {
+    data: order,
+    isLoading,
+    error,
+    refetch,
+  } = useGetOrderByIdQuery(orderId);
   const { userInfo } = useSelector((state) => state.auth);
+  const [deliverOrder, { isLoading: loadingDeliver }] =
+    useDeliverOrderMutation();
 
-  function handleDeliverOrder(id) {
-    console.log(id);
+  async function handleDeliverOrder(id) {
+    try {
+      await deliverOrder(id);
+      refetch();
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
   }
 
   if (isLoading) return <Loader />;
@@ -54,7 +70,7 @@ function OrderDetailsScreen() {
               </p>
               {order.isDelivered ? (
                 <Message variant="success">
-                  Delivered on: {order.deliveredAt}
+                  Delivered on: {order.deliveredAt.substring(0, 10)}
                 </Message>
               ) : (
                 <Message variant="danger">Order Not Delivered</Message>
@@ -64,11 +80,13 @@ function OrderDetailsScreen() {
                 <Button
                   variant="contained"
                   color="success"
+                  disabled={loadingDeliver}
                   onClick={() => handleDeliverOrder(order._id)}
                 >
                   Mark as Delivered
                 </Button>
               )}
+              {loadingDeliver && <Loader />}
             </ListGroupItem>
             <ListGroupItem>
               <h3>Payment</h3>
