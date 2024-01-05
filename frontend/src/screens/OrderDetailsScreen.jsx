@@ -11,10 +11,17 @@ import {
   ListGroupItem,
   Row,
 } from "react-bootstrap";
+import { Button } from "@mui/material";
+import { useSelector } from "react-redux";
 
 function OrderDetailsScreen() {
   const { id: orderId } = useParams();
   const { data: order, isLoading, error } = useGetOrderByIdQuery(orderId);
+  const { userInfo } = useSelector((state) => state.auth);
+
+  function handleDeliverOrder(id) {
+    console.log(id);
+  }
 
   if (isLoading) return <Loader />;
 
@@ -51,6 +58,16 @@ function OrderDetailsScreen() {
                 </Message>
               ) : (
                 <Message variant="danger">Order Not Delivered</Message>
+              )}
+              {/* TODO: Add the 'order.isPaid &&' on the ternary below after intergrating the payment functionality */}
+              {userInfo.isAdmin && !order.isDelivered && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => handleDeliverOrder(order._id)}
+                >
+                  Mark as Delivered
+                </Button>
               )}
             </ListGroupItem>
             <ListGroupItem>

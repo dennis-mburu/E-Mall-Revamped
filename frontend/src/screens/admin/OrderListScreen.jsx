@@ -47,7 +47,7 @@ function OrderListScreen() {
               {orders?.map((order) => (
                 <TableRow
                   hover
-                  key={order.name}
+                  key={order._id}
                   sx={{
                     "&:last-child td, &:last-child th": { border: 0 },
                     cursor: "pointer",
