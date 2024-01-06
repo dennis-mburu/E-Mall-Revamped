@@ -2,7 +2,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
 // @desc - Fetch all products
-// @route - /api/products
+// @route - GET /api/products
 // @access - Public
 const getAllProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({});
@@ -10,7 +10,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
 });
 
 // @desc - Fetch product by Id
-// @route - /api/products/:id
+// @route - GET /api/products/:id
 // @access - Public
 const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
@@ -24,18 +24,16 @@ const getProductById = asyncHandler(async (req, res) => {
 });
 
 // @desc - Create New Product
-// @route - /api/products/
+// @route - POST /api/products/
 // @access - Public
 const createNewProduct = asyncHandler(async (req, res) => {
-  const { name, image, brand, category, description } = req.body;
-
   const newProduct = new Product({
     user: req.user._id,
-    name,
-    image,
-    brand,
-    category,
-    description,
+    name: "Sample Name",
+    brand: "Sample Brand",
+    image: "/image/sample.jpg",
+    category: "Sample Category",
+    description: "Sample Description",
   });
 
   const newSavedProduct = await newProduct.save();

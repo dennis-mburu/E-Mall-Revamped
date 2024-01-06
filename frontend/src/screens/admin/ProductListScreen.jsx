@@ -18,14 +18,6 @@ import Loader from "../../components/Loader";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const sampleProduct = {
-  name: "Sample Name",
-  brand: "Sample Brand",
-  image: "Sample Image",
-  category: "Sample Category",
-  description: "Sample Description",
-};
-
 function ProductListScreen() {
   const navigate = useNavigate();
 
@@ -40,22 +32,23 @@ function ProductListScreen() {
     useCreateNewProductMutation();
 
   async function handleCreateProduct() {
-    try {
-      await createProduct(sampleProduct).unwrap();
-      refetch()
-    } catch (error) {
-      toast.error(error.data.message || error.data);
+    if (window.confirm("Are You sure you want to create a new Product?")) {
+      try {
+        await createProduct().unwrap();
+        refetch();
+      } catch (error) {
+        toast.error(error.data.message || error.data);
+      }
     }
   }
 
   return (
     <>
-      <Row style={{ marginTop: "1rem" }}>
+      <Row className="align-items-center my-3">
         <Col>
           <h3>Products</h3>
         </Col>
-        <Col style={{ alignSelf: "end" }}>
-          {/* TODO: Make the button float to the rightest end */}
+        <Col className="text-end">
           <Button
             variant="contained"
             color="success"
@@ -108,6 +101,9 @@ function ProductListScreen() {
                       variant="outlined"
                       size="small"
                       style={{ marginRight: "1rem" }}
+                      onClick={() => {
+                        navigate(`/products/${product._id}/edit`);
+                      }}
                     >
                       <FaEdit />
                     </Button>

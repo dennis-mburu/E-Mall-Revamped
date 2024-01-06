@@ -15,11 +15,11 @@ const productsApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     createNewProduct: builder.mutation({
-      query: (data) => ({
+      query: () => ({
         url: PRODUCTS_URL,
         method: "POST",
-        body: data,
       }),
+      // invalidatesTags: ["Product"]
     }),
   }),
 });
