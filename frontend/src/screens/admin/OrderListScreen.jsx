@@ -71,7 +71,7 @@ function OrderListScreen() {
                   </TableCell>
                   <TableCell align="center">
                     {order.isDelivered ? (
-                      order.deliveredAt
+                      order.deliveredAt.substring(0, 10)
                     ) : (
                       <FaTimes style={{ color: "red" }} />
                     )}
