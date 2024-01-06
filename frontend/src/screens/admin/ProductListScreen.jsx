@@ -2,7 +2,10 @@ import { Button } from "@mui/material";
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { useGetProductsQuery } from "../../slices/productsApiSlice";
+import {
+  useCreateNewProductMutation,
+  useGetProductsQuery,
+} from "../../slices/productsApiSlice";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,6 +16,15 @@ import Paper from "@mui/material/Paper";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+const sampleProduct = {
+  name: "Sample Name",
+  brand: "Sample Brand",
+  image: "Sample Image",
+  category: "Sample Category",
+  description: "Sample Description",
+};
 
 function ProductListScreen() {
   const navigate = useNavigate();
@@ -21,7 +33,21 @@ function ProductListScreen() {
     data: products,
     isLoading: loadingProducts,
     error,
+    refetch,
   } = useGetProductsQuery();
+
+  const [createProduct, { isLoading: loadingCreateProduct }] =
+    useCreateNewProductMutation();
+
+  async function handleCreateProduct() {
+    try {
+      await createProduct(sampleProduct).unwrap();
+      refetch()
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
+  }
+
   return (
     <>
       <Row style={{ marginTop: "1rem" }}>
@@ -30,7 +56,13 @@ function ProductListScreen() {
         </Col>
         <Col style={{ alignSelf: "end" }}>
           {/* TODO: Make the button float to the rightest end */}
-          <Button variant="contained" color="success" size="small">
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            disabled={loadingCreateProduct}
+            onClick={handleCreateProduct}
+          >
             <FaEdit style={{ marginRight: "5px" }} />
             Create Product
           </Button>
