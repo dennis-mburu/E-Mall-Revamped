@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import {
   useCreateNewProductMutation,
+  useDeleteProductMutation,
   useGetProductsQuery,
 } from "../../slices/productsApiSlice";
 import Table from "@mui/material/Table";
@@ -31,6 +32,9 @@ function ProductListScreen() {
   const [createProduct, { isLoading: loadingCreateProduct }] =
     useCreateNewProductMutation();
 
+  const [deleteProduct, { isLoading: LoadingDelete }] =
+    useDeleteProductMutation();
+
   async function handleCreateProduct() {
     if (window.confirm("Are You sure you want to create a new Product?")) {
       try {
@@ -42,8 +46,20 @@ function ProductListScreen() {
     }
   }
 
+  async function handleDelete(id) {
+    try {
+      const res = await deleteProduct(id).unwrap();
+      toast.success(res.message);
+      refetch();
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
+  }
+
   return (
     <>
+      {loadingCreateProduct && <Loader />}
+      {LoadingDelete && <Loader />}
       <Row className="align-items-center my-3">
         <Col>
           <h3>Products</h3>
@@ -53,7 +69,7 @@ function ProductListScreen() {
             variant="contained"
             color="success"
             size="small"
-            disabled={loadingCreateProduct}
+            disabled={loadingCreateProduct || LoadingDelete}
             onClick={handleCreateProduct}
           >
             <FaEdit style={{ marginRight: "5px" }} />
@@ -101,13 +117,20 @@ function ProductListScreen() {
                       variant="outlined"
                       size="small"
                       style={{ marginRight: "1rem" }}
+                      disabled={loadingCreateProduct || LoadingDelete}
                       onClick={() => {
                         navigate(`/products/${product._id}/edit`);
                       }}
                     >
                       <FaEdit />
                     </Button>
-                    <Button variant="outlined" size="small" color="error">
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      color="error"
+                      disabled={loadingCreateProduct || LoadingDelete}
+                      onClick={() => handleDelete(product._id)}
+                    >
                       <FaTrash />
                     </Button>
                   </TableCell>
