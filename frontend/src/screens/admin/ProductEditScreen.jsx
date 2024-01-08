@@ -1,12 +1,17 @@
 import { Container, Box, TextField, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../../slices/productsApiSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "../../slices/productsApiSlice";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import { toast } from "react-toastify";
 
 function ProductEditScreen() {
-  const { id } = useParams();
+  const { id: productId } = useParams();
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
@@ -20,7 +25,7 @@ function ProductEditScreen() {
     data: product,
     isLoading: loadingProduct,
     error,
-  } = useGetProductByIdQuery(id);
+  } = useGetProductByIdQuery(productId);
 
   useEffect(() => {
     if (product) {
@@ -34,9 +39,26 @@ function ProductEditScreen() {
     }
   }, [product]);
 
+  const [updateProduct, { isLoading: loadingUpdate }] =
+    useUpdateProductMutation();
+
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log("submit");
+    try {
+      await updateProduct({
+        productId,
+        name,
+        brand,
+        category,
+        description,
+        price,
+        countInStock,
+      }).unwrap();
+      toast.success("Product Successfully Updated");
+      navigate(-1);
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
   }
 
   if (loadingProduct) return <Loader />;
@@ -48,6 +70,7 @@ function ProductEditScreen() {
 
   return (
     <Container component="main" maxWidth="md">
+      {loadingUpdate && <Loader />}
       <Box
         sx={{
           boxShadow: 3,
@@ -146,7 +169,12 @@ function ProductEditScreen() {
             value={countInStock}
             onChange={(e) => setCountInStock(e.target.value)}
           />
-          <Button variant="contained" sx={{ mt: 2 }} type="submit">
+          <Button
+            disabled={loadingUpdate}
+            variant="contained"
+            sx={{ mt: 2 }}
+            type="submit"
+          >
             Update Product
           </Button>
         </Box>
