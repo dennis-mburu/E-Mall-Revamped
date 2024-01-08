@@ -47,12 +47,14 @@ function ProductListScreen() {
   }
 
   async function handleDelete(id) {
-    try {
-      const res = await deleteProduct(id).unwrap();
-      toast.success(res.message);
-      refetch();
-    } catch (error) {
-      toast.error(error.data.message || error.data);
+    if (window.confirm("Are you sure you want to delete selected product? ")) {
+      try {
+        const res = await deleteProduct(id).unwrap();
+        toast.success(res.message);
+        refetch();
+      } catch (error) {
+        toast.error(error.data.message || error.data);
+      }
     }
   }
 
@@ -119,7 +121,7 @@ function ProductListScreen() {
                       style={{ marginRight: "1rem" }}
                       disabled={loadingCreateProduct || LoadingDelete}
                       onClick={() => {
-                        navigate(`/products/${product._id}/edit`);
+                        navigate(`/admin/products/${product._id}/edit`);
                       }}
                     >
                       <FaEdit />
