@@ -6,7 +6,7 @@ import Product from "../models/productModel.js";
 // @access - Public
 const getAllProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({});
-  res.json(products);
+  res.status(200).json(products);
 });
 
 // @desc - Fetch product by Id
@@ -40,6 +40,9 @@ const createNewProduct = asyncHandler(async (req, res) => {
   res.status(201).json(newSavedProduct);
 });
 
+// @desc - Update a Product
+// @route - PUT /api/products/:id
+// @access - Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.body.productId);
 

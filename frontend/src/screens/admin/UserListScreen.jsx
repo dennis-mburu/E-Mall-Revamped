@@ -17,7 +17,7 @@ import { useGetAllUsersQuery } from "../../slices/authApiSlice";
 function UserListScreen() {
   const navigate = useNavigate();
 
-  const { data: users, isLoading, error } = useGetAllUsersQuery();
+  const { data: users, isLoading, error, refetch } = useGetAllUsersQuery();
 
   async function handleDelete(id) {
     console.log("Delete");
@@ -50,7 +50,7 @@ function UserListScreen() {
                 key={user._id}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
-                //   cursor: "pointer",
+                  //   cursor: "pointer",
                 }}
                 //   onClick={() => navigate(`/user/${user._id}`)}
               >
@@ -58,7 +58,9 @@ function UserListScreen() {
                   {user._id}
                 </TableCell>
                 <TableCell align="center">{user.name}</TableCell>
-                <TableCell align="center">{user.email}</TableCell>
+                <TableCell align="center">
+                  <a href={`mailto:${user.email}`}>{user.email}</a>
+                </TableCell>
                 <TableCell align="center">
                   {user.isAdmin ? (
                     <FaCheck style={{ color: "green" }} />
