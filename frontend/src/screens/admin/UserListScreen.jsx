@@ -12,15 +12,26 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useGetAllUsersQuery } from "../../slices/authApiSlice";
+import {
+  useDeleteUserMutation,
+  useGetAllUsersQuery,
+} from "../../slices/authApiSlice";
 
 function UserListScreen() {
   const navigate = useNavigate();
 
   const { data: users, isLoading, error, refetch } = useGetAllUsersQuery();
 
+  const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
+
   async function handleDelete(id) {
-    console.log("Delete");
+    try {
+      const res = await deleteUser(id).unwrap();
+      refetch();
+      toast.success(res.message);
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
   }
 
   if (isLoading) return <Loader />;
@@ -32,6 +43,7 @@ function UserListScreen() {
 
   return (
     <>
+      {loadingDelete && <Loader />}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -73,7 +85,7 @@ function UserListScreen() {
                     variant="outlined"
                     size="small"
                     style={{ marginRight: "1rem" }}
-                    // disabled={loadingCreateProduct || LoadingDelete}
+                    disabled={loadingDelete}
                     onClick={() => {
                       navigate(`/admin/users/${user._id}/edit`);
                     }}
@@ -84,7 +96,7 @@ function UserListScreen() {
                     variant="outlined"
                     size="small"
                     color="error"
-                    // disabled={loadingCreateProduct || LoadingDelete}
+                    disabled={loadingDelete}
                     onClick={() => handleDelete(user._id)}
                   >
                     <FaTrash />

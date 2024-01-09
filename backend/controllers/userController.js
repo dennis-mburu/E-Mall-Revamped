@@ -129,18 +129,23 @@ const getUserbyId = asyncHandler(async (req, res) => {
   res.send("Get user by ID");
 });
 
-// @desc - Delete all users
-// @route - Delete /api/users
-// @access - Private/Admin
-const deleteAllUsers = asyncHandler(async (req, res) => {
-  res.send("Delete all users");
-});
-
 // @desc - Delete user by ID
 // @route - DELETE /api/users/:id
 // @access - Private/Admin
 const deleteUserById = asyncHandler(async (req, res) => {
-  res.send("Delete User by ID");
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    if (!user.isAdmin) {
+      await User.deleteOne({ _id: user._id });
+      res.status(200).json({ message: "User Successfully Deleted" });
+    } else {
+      res.status(400).json({ message: "Cannot Delete System Administrator" });
+    }
+  } else {
+    res.status(404);
+    throw new Error("User not Found");
+  }
 });
 
 // @desc - update User
@@ -158,7 +163,6 @@ export {
   updateUserProfile,
   getAllUsers,
   getUserbyId,
-  deleteAllUsers,
   deleteUserById,
   updateUser,
 };
