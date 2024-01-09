@@ -1,6 +1,7 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
+import { deleteUserOrders } from "./orderController.js";
 
 // @desc - Authenticate User & get token
 // @route - POST /api/users/login
@@ -137,6 +138,7 @@ const deleteUserById = asyncHandler(async (req, res) => {
 
   if (user) {
     if (!user.isAdmin) {
+      await deleteUserOrders(user._id)
       await User.deleteOne({ _id: user._id });
       res.status(200).json({ message: "User Successfully Deleted" });
     } else {

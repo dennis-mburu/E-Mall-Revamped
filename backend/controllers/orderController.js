@@ -110,6 +110,10 @@ const deliverOrder = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteUserOrders = async (userId) => {
+  await Order.deleteMany({ user: userId });
+};
+
 export {
   createNewOrder,
   getMyOrders,
@@ -117,4 +121,5 @@ export {
   getAllOrders,
   getOrderById,
   deliverOrder,
+  deleteUserOrders,
 };

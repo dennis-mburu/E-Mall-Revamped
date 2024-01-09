@@ -24,13 +24,17 @@ function UserListScreen() {
 
   const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
 
-  async function handleDelete(id) {
-    try {
-      const res = await deleteUser(id).unwrap();
-      refetch();
-      toast.success(res.message);
-    } catch (error) {
-      toast.error(error.data.message || error.data);
+  async function handleDelete(user) {
+    if (
+      window.confirm(`This will also delete ${user.name}'s orders. Proceed?`)
+    ) {
+      try {
+        const res = await deleteUser(user._id).unwrap();
+        refetch();
+        toast.success(res.message);
+      } catch (error) {
+        toast.error(error.data.message || error.data);
+      }
     }
   }
 
@@ -97,7 +101,7 @@ function UserListScreen() {
                     size="small"
                     color="error"
                     disabled={loadingDelete}
-                    onClick={() => handleDelete(user._id)}
+                    onClick={() => handleDelete(user)}
                   >
                     <FaTrash />
                   </Button>
