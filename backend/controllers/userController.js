@@ -160,7 +160,21 @@ const deleteUserById = asyncHandler(async (req, res) => {
 // @route - PUT /api/users/:id
 // @access - Private/Admin
 const updateUser = asyncHandler(async (req, res) => {
-  res.send("Update user");
+  const user = await User.findById(req.params.id);
+
+  const { name, email, isAdmin } = req.body;
+
+  if (user) {
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.isAdmin = isAdmin;
+
+    const updatedUser = await user.save();
+    res.status(200).json(updatedUser);
+  } else {
+    res.status(404);
+    throw new Error("User not Found");
+  }
 });
 
 export {

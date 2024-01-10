@@ -46,6 +46,13 @@ const authApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/${userId}`,
       }),
     }),
+    updateUser: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/${data.userId}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -56,5 +63,6 @@ export const {
   useUpdateProfileMutation,
   useGetAllUsersQuery,
   useDeleteUserMutation,
-  useGetUserByIdQuery
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
 } = authApiSlice;

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Container, Box, TextField, Button } from "@mui/material";
-import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetUserByIdQuery } from "../../slices/authApiSlice";
+import {
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
+} from "../../slices/authApiSlice";
 
 function UserEditScreen() {
   const [name, setName] = useState("");
@@ -15,8 +17,15 @@ function UserEditScreen() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const { id: userId } = useParams();
+  const navigate = useNavigate();
 
-  const { data: user, isLoading: loadingUser } = useGetUserByIdQuery(userId);
+  const {
+    data: user,
+    isLoading: loadingUser,
+    error,
+  } = useGetUserByIdQuery(userId);
+
+  const [updateUser, { isLoading: loadingUpdate }] = useUpdateUserMutation();
 
   useEffect(() => {
     if (user) {
@@ -28,11 +37,23 @@ function UserEditScreen() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await updateUser({ userId, name, email, isAdmin }).unwrap();
+      toast.success("User Updated Successfully");
+      navigate(-1);
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
   };
 
+  if (loadingUser) return <Loader />;
+  if (error)
+    return (
+      <Message variant="danger">{error.data.message || error.data}</Message>
+    );
   return (
     <>
-      {loadingUser && <Loader />}
+      {loadingUpdate && <Loader />}
       <Container component="main" maxWidth="md">
         <Box
           sx={{
@@ -85,7 +106,7 @@ function UserEditScreen() {
             />
             <br />
             <Button
-              disabled={loadingUser}
+              disabled={loadingUser || loadingUpdate}
               variant="contained"
               sx={{ mt: 2 }}
               type="submit"
