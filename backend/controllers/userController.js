@@ -127,7 +127,13 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // @route - GET /api/users/:id
 // @access - Private/Admin
 const getUserbyId = asyncHandler(async (req, res) => {
-  res.send("Get user by ID");
+  const user = await User.findById(req.params.id).select("-password");
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(404);
+    throw new Error("User Not found");
+  }
 });
 
 // @desc - Delete user by ID
@@ -138,7 +144,7 @@ const deleteUserById = asyncHandler(async (req, res) => {
 
   if (user) {
     if (!user.isAdmin) {
-      await deleteUserOrders(user._id)
+      await deleteUserOrders(user._id);
       await User.deleteOne({ _id: user._id });
       res.status(200).json({ message: "User Successfully Deleted" });
     } else {

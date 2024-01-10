@@ -41,6 +41,11 @@ const authApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    getUserById: builder.query({
+      query: (userId) => ({
+        url: `${USERS_URL}/${userId}`,
+      }),
+    }),
   }),
 });
 
@@ -51,4 +56,5 @@ export const {
   useUpdateProfileMutation,
   useGetAllUsersQuery,
   useDeleteUserMutation,
+  useGetUserByIdQuery
 } = authApiSlice;
