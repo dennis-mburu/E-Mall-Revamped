@@ -1,9 +1,18 @@
-import { Container, Box, TextField, Button } from "@mui/material";
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  FormControl,
+  FormLabel,
+  FormGroup,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
+  useUploadProductImageMutation,
 } from "../../slices/productsApiSlice";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
@@ -25,7 +34,7 @@ function ProductEditScreen() {
     data: product,
     isLoading: loadingProduct,
     error,
-    refetch
+    refetch,
   } = useGetProductByIdQuery(productId);
 
   useEffect(() => {
@@ -43,6 +52,9 @@ function ProductEditScreen() {
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
 
+  const [uploadImage, { isLoading: loadingImage }] =
+    useUploadProductImageMutation();
+
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -54,10 +66,23 @@ function ProductEditScreen() {
         description,
         price,
         countInStock,
+        image,
       }).unwrap();
-      refetch()
+      refetch();
       toast.success("Product Successfully Updated");
       navigate(-1);
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
+  }
+
+  async function uploadFileHandler(e) {
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    try {
+      const res = await uploadImage(formData).unwrap();
+      setImage(res.image);
+      toast.success(res.message);
     } catch (error) {
       toast.error(error.data.message || error.data);
     }
@@ -73,6 +98,7 @@ function ProductEditScreen() {
   return (
     <Container component="main" maxWidth="md">
       {loadingUpdate && <Loader />}
+      {loadingImage && <Loader />}
       <Box
         sx={{
           boxShadow: 3,
@@ -143,6 +169,34 @@ function ProductEditScreen() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          {/* <FormControl component="fieldset" variant="standard"> */}
+          {/* <FormLabel component="legend">Image</FormLabel> */}
+          <FormGroup>
+            <TextField
+              variant="standard"
+              type="text"
+              margin="normal"
+              // required
+              fullWidth
+              name="imageURL"
+              label="image URL"
+              id="imageURL"
+              autoComplete="imageURL"
+              size="small"
+              value={image}
+              onChange={(e) => setImage(e.target.value)}
+            />
+            <TextField
+              size="small"
+              variant="standard"
+              type="file"
+              margin="normal"
+              name="image"
+              onChange={uploadFileHandler}
+            />
+          </FormGroup>
+          {/* </FormControl> */}
+
           <TextField
             variant="standard"
             type="number"

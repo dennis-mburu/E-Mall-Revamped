@@ -25,13 +25,13 @@ const getProductById = asyncHandler(async (req, res) => {
 
 // @desc - Create New Product
 // @route - POST /api/products/
-// @access - Public
+// @access - Private/Admin
 const createNewProduct = asyncHandler(async (req, res) => {
   const newProduct = new Product({
     user: req.user._id,
     name: "Sample Name",
     brand: "Sample Brand",
-    image: "/image/sample.jpg",
+    image: "/images/sample.jpg",
     category: "Sample Category",
     description: "Sample Description",
   });
@@ -46,7 +46,8 @@ const createNewProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.body.productId);
 
-  const { name, brand, category, description, price, countInStock } = req.body;
+  const { name, brand, category, description, price, countInStock, image } =
+    req.body;
 
   if (product) {
     product.name = name;
@@ -55,6 +56,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.description = description;
     product.price = price;
     product.countInStock = countInStock;
+    product.image = image;
 
     const updatedProduct = await product.save();
     res.status(200).json(updatedProduct);
