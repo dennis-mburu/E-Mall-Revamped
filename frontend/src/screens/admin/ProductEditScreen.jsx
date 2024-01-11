@@ -25,6 +25,7 @@ function ProductEditScreen() {
     data: product,
     isLoading: loadingProduct,
     error,
+    refetch
   } = useGetProductByIdQuery(productId);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ function ProductEditScreen() {
         price,
         countInStock,
       }).unwrap();
+      refetch()
       toast.success("Product Successfully Updated");
       navigate(-1);
     } catch (error) {

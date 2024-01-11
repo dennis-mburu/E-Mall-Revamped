@@ -34,6 +34,7 @@ const authApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: USERS_URL,
       }),
+      providesTags: ["Users"]
     }),
     deleteUser: builder.mutation({
       query: (userId) => ({
@@ -52,6 +53,7 @@ const authApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["Users"]
     }),
   }),
 });

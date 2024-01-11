@@ -23,6 +23,7 @@ function UserEditScreen() {
     data: user,
     isLoading: loadingUser,
     error,
+    refetch
   } = useGetUserByIdQuery(userId);
 
   const [updateUser, { isLoading: loadingUpdate }] = useUpdateUserMutation();
@@ -39,8 +40,10 @@ function UserEditScreen() {
     e.preventDefault();
     try {
       await updateUser({ userId, name, email, isAdmin }).unwrap();
+      refetch()
       toast.success("User Updated Successfully");
-      navigate(-1);
+      // navigate(`/admin/userlist`);
+      navigate(-1)
     } catch (error) {
       toast.error(error.data.message || error.data);
     }
