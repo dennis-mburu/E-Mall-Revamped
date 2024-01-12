@@ -1,12 +1,14 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../slices/productsApiSlice";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  useCreateProductReviewMutation,
+  useGetProductByIdQuery,
+} from "../slices/productsApiSlice";
 import {
   Row,
   Col,
   Image,
   ListGroup,
   Card,
-  Button,
   ListGroupItem,
   FormSelect,
 } from "react-bootstrap";
@@ -15,8 +17,17 @@ import { LinkContainer } from "react-router-bootstrap";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Button,
+} from "@mui/material";
 
 function ProductScreen() {
   const navigate = useNavigate();
@@ -24,11 +35,25 @@ function ProductScreen() {
   const { id: productId } = useParams();
   const [qty, setQty] = useState(1);
 
+  const [rating, setRating] = useState(null);
+  const [comment, setComment] = useState("");
+
   const { data: product, isLoading, error } = useGetProductByIdQuery(productId);
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [createProductReview, { isLoading: loadingCreateReview }] =
+    useCreateProductReviewMutation();
 
   function addToCartHandler() {
     dispatch(addToCart({ ...product, qty }));
     navigate("/cart");
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    console.log({ rating, comment, productId });
+    console.log(typeof rating);
   }
 
   if (isLoading) return <Loader />;
@@ -41,13 +66,13 @@ function ProductScreen() {
   return (
     <>
       <LinkContainer to="/" className="my-3">
-        <Button variant="primary">Go Back</Button>
+        <Button variant="contained">Go Back</Button>
       </LinkContainer>
 
       {/* <Link to="/" className="btn btn-light my-3" >Go back</Link> */}
       <Row>
         <Col md={4}>
-          <Image src={product.image} alt={product.name} fluid thumbnail/>
+          <Image src={product.image} alt={product.name} fluid thumbnail />
         </Col>
         <Col md={4}>
           <ListGroup variant="flush">
@@ -105,10 +130,10 @@ function ProductScreen() {
 
               <ListGroupItem>
                 <Button
-                  type="button"
-                  variant="primary"
+                  variant="contained"
                   disabled={product.countInStock === 0}
-                  className="w-full bg-blue-600 disabled:text-slate-400"
+                  fullWidth
+                  // className="w-full bg-blue-600 disabled:text-slate-400"
                   onClick={addToCartHandler}
                 >
                   Add to Cart
@@ -116,6 +141,66 @@ function ProductScreen() {
               </ListGroupItem>
             </ListGroup>
           </Card>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col className="my-3" md={6}>
+          <h4>Write a Customer Review</h4>
+          {userInfo ? (
+            <Box component="form" onSubmit={handleSubmit}>
+              <FormControl
+                sx={{ my: 2 }}
+                fullWidth
+                variant="filled"
+                size="small"
+              >
+                <InputLabel id="rating">Rating</InputLabel>
+                <Select
+                  labelId="rating"
+                  required
+                  id="rating"
+                  value={rating}
+                  onChange={(e) => setRating(e.target.value)}
+                >
+                  <MenuItem value={1}>1 - Poor</MenuItem>
+                  <MenuItem value={2}>2 - Fair</MenuItem>
+                  <MenuItem value={3}>3 - Good</MenuItem>
+                  <MenuItem value={4}>4 - Very Good</MenuItem>
+                  <MenuItem value={5}>5 - Excellent</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                variant="standard"
+                type="text"
+                // margin="normal"
+                required
+                fullWidth
+                name="comment"
+                label="Comment"
+                id="comment"
+                autoComplete="comment"
+                size="small"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+              <Button
+                disabled={loadingCreateReview}
+                variant="contained"
+                sx={{ my: 2 }}
+                type="submit"
+              >
+                Post Review
+              </Button>
+            </Box>
+          ) : (
+            <Message>Please <Link to="/login">log in</Link> to Post reviews</Message>
+          )}
+
+          <h3 style={{ textAlign: "center" }}>All Reviews</h3>
+          {product.reviews.length === 0 && (
+            <Message>There are currently no reviews for this product</Message>
+          )}
         </Col>
       </Row>
     </>
