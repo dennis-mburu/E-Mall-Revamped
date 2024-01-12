@@ -28,6 +28,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
+import { toast } from "react-toastify";
 
 function ProductScreen() {
   const navigate = useNavigate();
@@ -38,7 +39,12 @@ function ProductScreen() {
   const [rating, setRating] = useState(null);
   const [comment, setComment] = useState("");
 
-  const { data: product, isLoading, error } = useGetProductByIdQuery(productId);
+  const {
+    data: product,
+    isLoading,
+    error,
+    refetch,
+  } = useGetProductByIdQuery(productId);
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -52,8 +58,19 @@ function ProductScreen() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log({ rating, comment, productId });
-    console.log(typeof rating);
+    try {
+      const res = await createProductReview({
+        productId,
+        rating,
+        comment,
+      }).unwrap();
+      setComment("");
+      setRating(null);
+      refetch();
+      toast.success(res.message);
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
   }
 
   if (isLoading) return <Loader />;
@@ -147,6 +164,7 @@ function ProductScreen() {
       <Row>
         <Col className="my-3" md={6}>
           <h4>Write a Customer Review</h4>
+          {loadingCreateReview && <Loader />}
           {userInfo ? (
             <Box component="form" onSubmit={handleSubmit}>
               <FormControl
@@ -194,13 +212,25 @@ function ProductScreen() {
               </Button>
             </Box>
           ) : (
-            <Message>Please <Link to="/login">log in</Link> to Post reviews</Message>
+            <Message>
+              Please <Link to="/login">Log In</Link> to Post reviews
+            </Message>
           )}
 
           <h3 style={{ textAlign: "center" }}>All Reviews</h3>
           {product.reviews.length === 0 && (
             <Message>There are currently no reviews for this product</Message>
           )}
+          <ListGroup variant="flush">
+            {product.reviews.map((review) => (
+              <ListGroupItem key={review._id}>
+                <strong>{review.name}</strong>
+                <Rating rating={review.rating}></Rating>
+                <p>{review.createdAt.substring(0, 10)}</p>
+                <p>{review.comment}</p>
+              </ListGroupItem>
+            ))}
+          </ListGroup>
         </Col>
       </Row>
     </>
