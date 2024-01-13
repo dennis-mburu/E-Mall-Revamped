@@ -25,10 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 //middleware to extract cookies
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
-
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
@@ -37,6 +33,20 @@ app.use("/api/upload", uploadRoutes);
 // Set "/uploads" folder as static
 const __dirname = path.resolve(); //set __dirname to project's root directory
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+
+if (process.env.NODE_ENV === "production") {
+  // set the react build folder to be static
+  app.use(express.static(path.join(__dirname, "/frontend/build")));
+
+  // any other routes aside from the ones above (those with /api)  will be redirected to index.html
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running...");
+  });
+}
 
 app.use(notFound);
 app.use(errorHandler);
