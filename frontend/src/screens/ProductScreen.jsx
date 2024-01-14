@@ -29,6 +29,7 @@ import {
   Button,
 } from "@mui/material";
 import { toast } from "react-toastify";
+// import Meta from "../components/Meta";
 
 function ProductScreen() {
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ function ProductScreen() {
 
   return (
     <>
+      {/* <Meta title={product.name} description={product.description} /> */}
       <LinkContainer to="/" className="my-3">
         <Button variant="contained">Go Back</Button>
       </LinkContainer>
