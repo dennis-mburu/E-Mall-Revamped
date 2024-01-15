@@ -3,6 +3,7 @@ import Product from "../components/Product";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import ProductsCarousel from "../components/ProductsCarousel";
 
 function HomeScreen() {
   // const {data: products, isLoading, isFetching, isError, error} = useGetProductsQuery()
@@ -18,6 +19,9 @@ function HomeScreen() {
 
   return (
     <>
+      {/* <div style={{ width: "75%", marginInline: "auto" }}> */}
+      <ProductsCarousel />
+      {/* </div> */}
       <h1 className="main-heading">Latest Products</h1>
       <Row>
         {/* {products?.map((product) => ( */}
