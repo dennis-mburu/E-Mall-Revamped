@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 
 import { Provider } from "react-redux";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 import store from "./store";
 
 import { HelmetProvider } from "react-helmet-async";
@@ -70,7 +72,9 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Provider store={store}>
-        <RouterProvider router={router} />
+        <PayPalScriptProvider >
+          <RouterProvider router={router} />
+        </PayPalScriptProvider>
       </Provider>
     </HelmetProvider>
   </React.StrictMode>

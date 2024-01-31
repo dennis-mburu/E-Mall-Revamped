@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import {
   useDeliverOrderMutation,
   useGetOrderByIdQuery,
+  usePayOrderMutation,
 } from "../slices/orderApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -17,6 +18,7 @@ import {
 import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 function OrderDetailsScreen() {
   const { id: orderId } = useParams();
@@ -30,9 +32,23 @@ function OrderDetailsScreen() {
   const [deliverOrder, { isLoading: loadingDeliver }] =
     useDeliverOrderMutation();
 
+  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+
   async function handleDeliverOrder(id) {
     try {
       await deliverOrder(id);
+      refetch();
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
+  }
+
+  async function onApproveTest() {
+    try {
+      await payOrder({
+        orderId,
+        details: { payer: { email_address: userInfo.email } },
+      }).unwrap();
       refetch();
     } catch (error) {
       toast.error(error.data.message || error.data);
@@ -157,6 +173,21 @@ function OrderDetailsScreen() {
                     <Col>
                       <p>${order.totalPrice}</p>{" "}
                     </Col>
+                  </Row>
+                  <Row>
+                    {loadingPay ? (
+                      <Loader />
+                    ) : (
+                      <Button
+                        onClick={onApproveTest}
+                        className="my-3"
+                        variant="contained"
+                        fullwidth
+                      >
+                        Pay Order
+                      </Button>
+                    )}{" "}
+                    {loadingPay ? <Loader /> : <PayPalButtons />}
                   </Row>
                 </Row>
               </ListGroupItem>
