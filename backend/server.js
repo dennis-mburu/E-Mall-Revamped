@@ -30,6 +30,11 @@ app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
 
+// Get Paypal clientId
+app.get("/api/config/paypal", (req, res) =>
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
+);
+
 // Set "/uploads" folder as static
 const __dirname = path.resolve(); //set __dirname to project's root directory
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
