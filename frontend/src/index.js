@@ -72,7 +72,7 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Provider store={store}>
-        <PayPalScriptProvider >
+        <PayPalScriptProvider deferLoading={true}>
           <RouterProvider router={router} />
         </PayPalScriptProvider>
       </Provider>

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   useDeliverOrderMutation,
   useGetOrderByIdQuery,
   usePayOrderMutation,
+  useGetPayPalClientIdQuery,
 } from "../slices/orderApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -18,7 +19,7 @@ import {
 import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 function OrderDetailsScreen() {
   const { id: orderId } = useParams();
@@ -43,17 +44,48 @@ function OrderDetailsScreen() {
     }
   }
 
-  async function onApproveTest() {
-    try {
-      await payOrder({
-        orderId,
-        details: { payer: { email_address: userInfo.email } },
-      }).unwrap();
-      refetch();
-    } catch (error) {
-      toast.error(error.data.message || error.data);
+  const {
+    data: clientIdObj,
+    isLoading: loadingClientId,
+    error: clientIdError,
+  } = useGetPayPalClientIdQuery();
+
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  useEffect(() => {
+    if (!clientIdError && !loadingClientId && clientIdObj) {
+      const loadScriptReducer = async function () {
+        paypalDispatch({
+          type: "resetOptions",
+          value: {
+            clientId: clientIdObj.clientId,
+            currency: "USD",
+          },
+        });
+        paypalDispatch({
+          type: "setLoadingStatus",
+          value: "pending",
+        });
+      };
+      if(order && !order.isPaid) {
+        if(!window.clientIdObj){
+          loadScriptReducer()
+        }
+      }
     }
-  }
+  }, [order, clientIdObj, paypalDispatch, clientIdError, loadingClientId]);
+
+  // async function onApproveTest() {
+  //   try {
+  //     await payOrder({
+  //       orderId,
+  //       details: { payer: { email_address: userInfo.email } },
+  //     }).unwrap();
+  //     refetch();
+  //   } catch (error) {
+  //     toast.error(error.data.message || error.data);
+  //   }
+  // }
 
   if (isLoading) return <Loader />;
 
@@ -175,7 +207,7 @@ function OrderDetailsScreen() {
                     </Col>
                   </Row>
                   <Row>
-                    {loadingPay ? (
+                    {/* {loadingPay ? (
                       <Loader />
                     ) : (
                       <Button
@@ -186,7 +218,7 @@ function OrderDetailsScreen() {
                       >
                         Pay Order
                       </Button>
-                    )}{" "}
+                    )} */}
                     {loadingPay ? <Loader /> : <PayPalButtons />}
                   </Row>
                 </Row>
