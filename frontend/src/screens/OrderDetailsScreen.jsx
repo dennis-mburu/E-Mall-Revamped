@@ -67,13 +67,45 @@ function OrderDetailsScreen() {
           value: "pending",
         });
       };
-      if(order && !order.isPaid) {
-        if(!window.clientIdObj){
-          loadScriptReducer()
+      if (order && !order.isPaid) {
+        if (!window.clientIdObj) {
+          loadScriptReducer();
         }
       }
     }
   }, [order, clientIdObj, paypalDispatch, clientIdError, loadingClientId]);
+
+  function createOrder(data, actions) {
+    console.log("DATA", data);
+    console.log("ACTIONS", actions);
+    return actions.order
+      .create({
+        purchasea_units: [
+          {
+            amount: {
+              value: order.totalPrice,
+            },
+          },
+        ],
+      })
+      .then((orderId) => orderId);
+  }
+
+  function onApprove(data, actions) {
+    return actions.order.capture().then(async (details) => {
+      try {
+        await payOrder({ orderId, details }).unwrap();
+        refetch();
+        toast.success("Payment succeessful");
+      } catch (error) {
+        toast.error(error.data.message || error.data);
+      }
+    });
+  }
+
+  function onError(error) {
+    toast.error(error.message);
+  }
 
   // async function onApproveTest() {
   //   try {
@@ -82,6 +114,7 @@ function OrderDetailsScreen() {
   //       details: { payer: { email_address: userInfo.email } },
   //     }).unwrap();
   //     refetch();
+  // toast.success("Payment succeessful");
   //   } catch (error) {
   //     toast.error(error.data.message || error.data);
   //   }
@@ -207,19 +240,46 @@ function OrderDetailsScreen() {
                     </Col>
                   </Row>
                   <Row>
-                    {/* {loadingPay ? (
-                      <Loader />
-                    ) : (
-                      <Button
-                        onClick={onApproveTest}
-                        className="my-3"
-                        variant="contained"
-                        fullwidth
-                      >
-                        Pay Order
-                      </Button>
+                    {/* {!order.isPaid && (
+                      <>
+                        {loadingPay ? (
+                          <Loader />
+                        ) : (
+                          <Button
+                            onClick={onApproveTest}
+                            className="my-3"
+                            variant="contained"
+                            fullwidth
+                          >
+                            Pay Order
+                          </Button>
+                        )}
+                      </>
                     )} */}
-                    {loadingPay ? <Loader /> : <PayPalButtons />}
+
+                    {!order.isPaid && (
+                      <>
+                        {loadingPay || isPending ? (
+                          <Loader />
+                        ) : (
+                          <PayPalButtons
+                            createOrder={createOrder}
+                            onApprove={onApprove}
+                            onError={onError}
+                          />
+                        )}
+                      </>
+                    )}
+                    {clientIdError && (
+                      <ListGroupItem>
+                        <Message
+                          variant="danger"
+                          style={{ textAlign: "center" }}
+                        >
+                          {clientIdError.data.message || clientIdError.message}
+                        </Message>
+                      </ListGroupItem>
+                    )}
                   </Row>
                 </Row>
               </ListGroupItem>

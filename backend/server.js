@@ -32,6 +32,7 @@ app.use("/api/upload", uploadRoutes);
 
 // Get Paypal clientId
 app.get("/api/config/paypal", (req, res) =>
+  // {throw new Error("ClientId not Found")}
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
