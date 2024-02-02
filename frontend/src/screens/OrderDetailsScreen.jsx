@@ -76,11 +76,10 @@ function OrderDetailsScreen() {
   }, [order, clientIdObj, paypalDispatch, clientIdError, loadingClientId]);
 
   function createOrder(data, actions) {
-    console.log("DATA", data);
-    console.log("ACTIONS", actions);
+    console.log("DATA CREATE", data);
     return actions.order
       .create({
-        purchasea_units: [
+        purchase_units: [
           {
             amount: {
               value: order.totalPrice,
@@ -88,13 +87,19 @@ function OrderDetailsScreen() {
           },
         ],
       })
-      .then((orderId) => orderId);
+      .then((order_id) => {
+        console.log("ORDER_ID: ", order_id);
+        return order_id;
+      });
   }
 
   function onApprove(data, actions) {
     return actions.order.capture().then(async (details) => {
+      console.log("DATA APPROVE", data);
+      console.log("DETAILS", details);
       try {
-        await payOrder({ orderId, details }).unwrap();
+        const res = await payOrder({ orderId, details }).unwrap();
+        console.log("PAID ORDER: ", res);
         refetch();
         toast.success("Payment succeessful");
       } catch (error) {
@@ -156,18 +161,6 @@ function OrderDetailsScreen() {
               ) : (
                 <Message variant="danger">Order Not Delivered</Message>
               )}
-              {/* TODO: Add the 'order.isPaid &&' on the ternary below after intergrating the payment functionality */}
-              {userInfo.isAdmin && !order.isDelivered && (
-                <Button
-                  variant="contained"
-                  color="success"
-                  disabled={loadingDeliver}
-                  onClick={() => handleDeliverOrder(order._id)}
-                >
-                  Mark as Delivered
-                </Button>
-              )}
-              {loadingDeliver && <Loader />}
             </ListGroupItem>
             <ListGroupItem>
               <h3>Payment</h3>
@@ -270,6 +263,17 @@ function OrderDetailsScreen() {
                         )}
                       </>
                     )}
+                    {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                      <Button
+                        variant="contained"
+                        color="success"
+                        disabled={loadingDeliver}
+                        onClick={() => handleDeliverOrder(order._id)}
+                      >
+                        Mark as Delivered
+                      </Button>
+                    )}
+                    {loadingDeliver && <Loader />}
                     {clientIdError && (
                       <ListGroupItem>
                         <Message
