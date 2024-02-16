@@ -20,6 +20,7 @@ import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import MpesaButton from "../components/MpesaButton";
 
 function OrderDetailsScreen() {
   const { id: orderId } = useParams();
@@ -76,7 +77,6 @@ function OrderDetailsScreen() {
   }, [order, clientIdObj, paypalDispatch, clientIdError, loadingClientId]);
 
   function createOrder(data, actions) {
-    console.log("DATA CREATE", data);
     return actions.order
       .create({
         purchase_units: [
@@ -88,18 +88,14 @@ function OrderDetailsScreen() {
         ],
       })
       .then((order_id) => {
-        console.log("ORDER_ID: ", order_id);
         return order_id;
       });
   }
 
   function onApprove(data, actions) {
     return actions.order.capture().then(async (details) => {
-      console.log("DATA APPROVE", data);
-      console.log("DETAILS", details);
       try {
         const res = await payOrder({ orderId, details }).unwrap();
-        console.log("PAID ORDER: ", res);
         refetch();
         toast.success("Payment succeessful");
       } catch (error) {
@@ -250,7 +246,7 @@ function OrderDetailsScreen() {
                       </>
                     )} */}
 
-                    {!order.isPaid && (
+                    {order.paymentMethod === "PayPal" && !order.isPaid && (
                       <>
                         {loadingPay || isPending ? (
                           <Loader />
@@ -263,6 +259,17 @@ function OrderDetailsScreen() {
                         )}
                       </>
                     )}
+
+                    {order.paymentMethod === "M-Pesa" && !order.isPaid && (
+                      <>
+                        {loadingPay || isPending ? (
+                          <Loader />
+                        ) : (
+                          <MpesaButton></MpesaButton>
+                        )}
+                      </>
+                    )}
+
                     {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
                       <Button
                         variant="contained"
