@@ -9,6 +9,7 @@ import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import cookieParser from "cookie-parser";
+import { safAuthenticate } from "./controllers/safAuthController.js";
 
 connectDB();
 
@@ -35,6 +36,9 @@ app.get("/api/config/paypal", (req, res) =>
   // {throw new Error("ClientId not Found")}
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
+
+// Get Safaricom sandbox authorization access token
+app.get("/api/daraja/auth", safAuthenticate);
 
 // Set "/uploads" folder as static
 const __dirname = path.resolve(); //set __dirname to project's root directory
