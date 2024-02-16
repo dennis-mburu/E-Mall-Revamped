@@ -5,6 +5,7 @@ import {
   useGetOrderByIdQuery,
   usePayOrderMutation,
   useGetPayPalClientIdQuery,
+  useFetchDarajaAuthenticationMutation,
 } from "../slices/orderApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -20,30 +21,23 @@ import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import MpesaButton from "../components/MpesaButton";
 
 function OrderDetailsScreen() {
   const { id: orderId } = useParams();
+
   const {
     data: order,
     isLoading,
     error,
     refetch,
   } = useGetOrderByIdQuery(orderId);
+
   const { userInfo } = useSelector((state) => state.auth);
+
   const [deliverOrder, { isLoading: loadingDeliver }] =
     useDeliverOrderMutation();
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
-
-  async function handleDeliverOrder(id) {
-    try {
-      await deliverOrder(id);
-      refetch();
-    } catch (error) {
-      toast.error(error.data.message || error.data);
-    }
-  }
 
   const {
     data: clientIdObj,
@@ -52,6 +46,9 @@ function OrderDetailsScreen() {
   } = useGetPayPalClientIdQuery();
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  const [fetchAccessToken, { isLoading: loadingAccessToken }] =
+    useFetchDarajaAuthenticationMutation();
 
   useEffect(() => {
     if (!clientIdError && !loadingClientId && clientIdObj) {
@@ -75,6 +72,15 @@ function OrderDetailsScreen() {
       }
     }
   }, [order, clientIdObj, paypalDispatch, clientIdError, loadingClientId]);
+
+  async function handleDeliverOrder(id) {
+    try {
+      await deliverOrder(id);
+      refetch();
+    } catch (error) {
+      toast.error(error.data.message || error.data);
+    }
+  }
 
   function createOrder(data, actions) {
     return actions.order
@@ -120,6 +126,21 @@ function OrderDetailsScreen() {
   //     toast.error(error.data.message || error.data);
   //   }
   // }
+
+  async function handleMpesaPay() {
+    try {
+      const res = await fetchAccessToken().unwrap();
+      console.log(res);
+      if (res?.access_token) {
+        toast.success(res.access_token);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.data.message || error.data);
+    }
+  }
 
   if (isLoading) return <Loader />;
 
@@ -262,10 +283,15 @@ function OrderDetailsScreen() {
 
                     {order.paymentMethod === "M-Pesa" && !order.isPaid && (
                       <>
-                        {loadingPay || isPending ? (
+                        {loadingPay || loadingAccessToken ? (
                           <Loader />
                         ) : (
-                          <MpesaButton></MpesaButton>
+                          <button
+                            onClick={handleMpesaPay}
+                            className="mpesa-btn"
+                          >
+                            <img src="/images/mpesa.png" alt="" />
+                          </button>
                         )}
                       </>
                     )}

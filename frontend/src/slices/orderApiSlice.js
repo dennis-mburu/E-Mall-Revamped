@@ -1,4 +1,4 @@
-import { ORDERS_URL, PAYPAL_URL } from "../constants";
+import { DARAJA_AUTH_URL, ORDERS_URL, PAYPAL_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 const orderApiSlice = apiSlice.injectEndpoints({
@@ -47,6 +47,12 @@ const orderApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    fetchDarajaAuthentication: builder.mutation({
+      query: () => ({
+        url: DARAJA_AUTH_URL,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -58,4 +64,5 @@ export const {
   useDeliverOrderMutation,
   usePayOrderMutation,
   useGetPayPalClientIdQuery,
+  useFetchDarajaAuthenticationMutation,
 } = orderApiSlice;

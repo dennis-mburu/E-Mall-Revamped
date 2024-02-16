@@ -38,7 +38,7 @@ app.get("/api/config/paypal", (req, res) =>
 );
 
 // Get Safaricom sandbox authorization access token
-app.get("/api/daraja/auth", safAuthenticate);
+app.post("/api/daraja/auth", safAuthenticate);
 
 // Set "/uploads" folder as static
 const __dirname = path.resolve(); //set __dirname to project's root directory
